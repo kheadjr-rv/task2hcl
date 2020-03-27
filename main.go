@@ -7,8 +7,8 @@ import (
 	"os"
 
 	"github.com/aws/aws-sdk-go/service/ecs"
+	"github.com/zclconf/go-cty/cty"
 
-	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
 
@@ -41,130 +41,27 @@ func main() {
 	tf := hclwrite.NewEmptyFile()
 	body := tf.Body()
 
+	localsBlock := body.AppendNewBlock("locals", nil)
+
+	envs := make([]cty.Value, 0)
 	for _, v := range parsed.ContainerDefinitions[0].Environment {
-		body.AppendUnstructuredTokens(environment(*v.Name, *v.Value))
+		env := cty.ObjectVal(map[string]cty.Value{
+			"name":  cty.StringVal(*v.Name),
+			"value": cty.StringVal(*v.Value),
+		})
+		envs = append(envs, env)
 	}
+	localsBlock.Body().SetAttributeValue("env_vars", cty.ListVal(envs))
 
-	body.AppendNewline()
-
+	secrets := make([]cty.Value, 0)
 	for _, v := range parsed.ContainerDefinitions[0].Secrets {
-		body.AppendUnstructuredTokens(secrets(*v.Name, *v.ValueFrom))
+		secret := cty.ObjectVal(map[string]cty.Value{
+			"name":      cty.StringVal(*v.Name),
+			"valueFrom": cty.StringVal(*v.ValueFrom),
+		})
+		secrets = append(secrets, secret)
 	}
+	localsBlock.Body().SetAttributeValue("secret_env_vars", cty.ListVal(secrets))
 
 	fmt.Printf("%s", hclwrite.Format(tf.Bytes()))
-
-}
-
-func environment(name, value string) hclwrite.Tokens {
-	return hclwrite.Tokens{
-		{
-			Type:  hclsyntax.TokenCBrace,
-			Bytes: []byte{'{'},
-		},
-		{
-			Type:  hclsyntax.TokenNewline,
-			Bytes: []byte{'\n'},
-		},
-		{
-			Type:  hclsyntax.TokenIdent,
-			Bytes: []byte("name"),
-		},
-		{
-			Type:  hclsyntax.TokenEqual,
-			Bytes: []byte{'='},
-		},
-		{
-			Type:  hclsyntax.TokenStringLit,
-			Bytes: []byte(fmt.Sprintf("\"%s\"", name)),
-		},
-		{
-			Type:  hclsyntax.TokenNewline,
-			Bytes: []byte{'\n'},
-		},
-		{
-			Type:  hclsyntax.TokenIdent,
-			Bytes: []byte("value"),
-		},
-		{
-			Type:  hclsyntax.TokenEqual,
-			Bytes: []byte{'='},
-		},
-		{
-			Type:  hclsyntax.TokenStringLit,
-			Bytes: []byte(fmt.Sprintf("\"%s\"", value)),
-		},
-		{
-			Type:  hclsyntax.TokenNewline,
-			Bytes: []byte{'\n'},
-		},
-		{
-			Type:  hclsyntax.TokenCBrace,
-			Bytes: []byte{'}'},
-		},
-		{
-			Type:  hclsyntax.TokenComma,
-			Bytes: []byte{','},
-		},
-		{
-			Type:  hclsyntax.TokenNewline,
-			Bytes: []byte{'\n'},
-		},
-	}
-}
-
-func secrets(name, valueFrom string) hclwrite.Tokens {
-	return hclwrite.Tokens{
-		{
-			Type:  hclsyntax.TokenCBrace,
-			Bytes: []byte{'{'},
-		},
-		{
-			Type:  hclsyntax.TokenNewline,
-			Bytes: []byte{'\n'},
-		},
-		{
-			Type:  hclsyntax.TokenIdent,
-			Bytes: []byte("name"),
-		},
-		{
-			Type:  hclsyntax.TokenEqual,
-			Bytes: []byte{'='},
-		},
-		{
-			Type:  hclsyntax.TokenStringLit,
-			Bytes: []byte(fmt.Sprintf("\"%s\"", name)),
-		},
-		{
-			Type:  hclsyntax.TokenNewline,
-			Bytes: []byte{'\n'},
-		},
-		{
-			Type:  hclsyntax.TokenIdent,
-			Bytes: []byte("valueFrom"),
-		},
-		{
-			Type:  hclsyntax.TokenEqual,
-			Bytes: []byte{'='},
-		},
-		{
-			Type:  hclsyntax.TokenStringLit,
-			Bytes: []byte(fmt.Sprintf("\"%s\"", valueFrom)),
-		},
-		{
-			Type:  hclsyntax.TokenNewline,
-			Bytes: []byte{'\n'},
-		},
-		{
-			Type:  hclsyntax.TokenCBrace,
-			Bytes: []byte{'}'},
-		},
-		{
-			Type:  hclsyntax.TokenComma,
-			Bytes: []byte{','},
-		},
-		{
-			Type:  hclsyntax.TokenNewline,
-			Bytes: []byte{'\n'},
-		},
-	}
 }
