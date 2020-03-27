@@ -46,7 +46,7 @@ func main() {
 	envs := make([]cty.Value, 0)
 	for _, v := range parsed.ContainerDefinitions[0].Environment {
 		env := cty.ObjectVal(map[string]cty.Value{
-			"name":  cty.StringVal(fmt.Sprintln("%s", *v.Name)),
+			"name":  cty.StringVal(*v.Name),
 			"value": cty.StringVal(*v.Value),
 		})
 		envs = append(envs, env)
