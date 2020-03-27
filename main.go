@@ -12,10 +12,6 @@ import (
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
 
-var (
-	task = flag.Bool("task", false, "input is a ecs task definition")
-)
-
 func main() {
 	flag.Parse()
 
