@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 	"unicode"
 	"unicode/utf8"
 
@@ -58,9 +59,13 @@ func main() {
 
 	secrets := make([]cty.Value, 0)
 	for _, v := range parsed.ContainerDefinitions[0].Secrets {
+
+		// format the valueFrom to match name
+		valueFrom := strings.ReplaceAll(strings.ToLower(*v.Name), "-", "_")
+
 		secret := cty.ObjectVal(map[string]cty.Value{
 			"name":      cty.StringVal(*v.Name),
-			"valueFrom": cty.StringVal(*v.ValueFrom),
+			"valueFrom": cty.StringVal(valueFrom),
 		})
 		secrets = append(secrets, secret)
 	}
