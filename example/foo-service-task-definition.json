@@ -1,0 +1,147 @@
+{
+    "ipcMode": null,
+    "executionRoleArn": "",
+    "containerDefinitions": [
+        {
+            "dnsSearchDomains": null,
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "secretOptions": null,
+                "options": {
+                    "awslogs-group": "/ecs/foo-service",
+                    "awslogs-region": "us-west-2",
+                    "awslogs-stream-prefix": "foo-service"
+                }
+            },
+            "entryPoint": [],
+            "portMappings": [
+                {
+                    "hostPort": 80,
+                    "protocol": "tcp",
+                    "containerPort": 80
+                }
+            ],
+            "command": [],
+            "linuxParameters": null,
+            "cpu": 256,
+            "environment": [
+                {
+                    "name": "FOO_SETTING",
+                    "value": "true"
+                }
+            ],
+            "resourceRequirements": null,
+            "ulimits": null,
+            "dnsServers": null,
+            "mountPoints": [],
+            "workingDirectory": null,
+            "secrets": [
+                {
+                    "valueFrom": "/foo-service/bar-secret",
+                    "name": "BAR_SECRET"
+                },
+                {
+                    "valueFrom": "/foo-service/bar-key",
+                    "name": "BAR_KEY"
+                }
+            ],
+            "dockerSecurityOptions": null,
+            "memory": 1024,
+            "memoryReservation": null,
+            "volumesFrom": [],
+            "stopTimeout": null,
+            "image": "111111111111.dkr.ecr.us-west-2.amazonaws.com/foo-service:1.0.0",
+            "startTimeout": null,
+            "firelensConfiguration": null,
+            "dependsOn": null,
+            "disableNetworking": null,
+            "interactive": null,
+            "healthCheck": null,
+            "essential": true,
+            "links": null,
+            "hostname": null,
+            "extraHosts": null,
+            "pseudoTerminal": null,
+            "user": null,
+            "readonlyRootFilesystem": null,
+            "dockerLabels": null,
+            "systemControls": null,
+            "privileged": null,
+            "name": "foo-service"
+        }
+    ],
+    "placementConstraints": [],
+    "memory": "1024",
+    "taskRoleArn": "arn:aws:iam::111111111111:role/foo-service-task-role-us-west-2",
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "taskDefinitionArn": "arn:aws:ecs:us-west-2:1111111111:task-definition/foo-service:12",
+    "family": "foo-service",
+    "requiresAttributes": [
+        {
+            "targetId": null,
+            "targetType": null,
+            "value": null,
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "targetId": null,
+            "targetType": null,
+            "value": null,
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "targetId": null,
+            "targetType": null,
+            "value": null,
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "targetId": null,
+            "targetType": null,
+            "value": null,
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "targetId": null,
+            "targetType": null,
+            "value": null,
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "targetId": null,
+            "targetType": null,
+            "value": null,
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "targetId": null,
+            "targetType": null,
+            "value": null,
+            "name": "ecs.capability.secrets.ssm.environment-variables"
+        },
+        {
+            "targetId": null,
+            "targetType": null,
+            "value": null,
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "targetId": null,
+            "targetType": null,
+            "value": null,
+            "name": "ecs.capability.task-eni"
+        }
+    ],
+    "pidMode": null,
+    "requiresCompatibilities": [],
+    "networkMode": "awsvpc",
+    "cpu": "256",
+    "revision": 12,
+    "status": "ACTIVE",
+    "inferenceAccelerators": null,
+    "proxyConfiguration": null,
+    "volumes": []
+}
