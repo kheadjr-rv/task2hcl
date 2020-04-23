@@ -5,6 +5,12 @@ task2hcl converts `environment` and `secrets` within a json task definition to a
 - `environment` The environment variables to pass to a container.
 - `secrets` The secrets to pass to the container.
 
+### Installation
+
+```
+go install github.com/kheadjr-rv/task2hcl
+```
+
 ### Usage
 
 ```
